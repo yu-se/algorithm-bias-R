@@ -1,0 +1,132 @@
+---
+title: "Presentation"
+author: "Eran Aizikovich"
+date: "5/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## R Markdown
+The big Q: How he annotator's background effects his way of annotating? 
+Lets Start, load file csv
+
+```{r}
+df_1 <- read.csv(
+  "C:\\Users\\Eran Aizikovich\\Documents\\FinalProjectHateSpeeech\\measuring_hate_speech.csv")
+glimpse(df_1)
+```
+
+```{r}
+df <- df_1 #[,c('comment_id', 'platform', 'sentiment')]
+cols <- c('comment_id','annotator_id','insult','humiliate','violence','violence',
+          'hatespeech','hate_speech_score')
+
+df <- df[,cols]
+
+```
+
+```{r}
+
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+## Take only annotators that tagged more then 20 comments
+annotators <- df %>% count(annotator_id)
+annotators <- (annotators %>% filter(n >19))$annotator_id
+anno <- df_1 %>% filter(annotator_id %in% annotators)
+
+```
+
+```{r}
+
+
+
+df_race <- anno
+                
+df_race['race'] <- rep(0, 49875)
+                       
+df_race <- within(df_race, race[annotator_race_asian == 'True']<-'asain')
+df_race <- within(df_race, race[annotator_race_black == 'True']<-'black')
+df_race <- within(df_race, race[annotator_race_latinx == 'True']<-'latinx')
+df_race <- within(df_race, race[annotator_race_middle_eastern == 'True']<-'middle_eastern')
+df_race <- within(df_race, race[annotator_race_native_american == 'True']<-'native_american')
+df_race <- within(df_race, race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
+df_race <- within(df_race, race[annotator_race_white == 'True']<-'white')
+df_race <- within(df_race, race[annotator_race_other == 'True']<-'other')
+
+```
+```{r}
+ggplot(df_race, aes(x=race))+
+  geom_bar(fill = 'dark red') +
+  labs(
+    x = "Annotator Race",
+    y = "Counter",
+    fill = "Class",
+    title = "Annotator Race Distribution",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+        
+        
+  )
+
+```
+```{r}
+comments <- df %>% count(comment_id)
+comments <- (comments %>% filter(n >19))$comment_id
+comm <- df_1 %>% filter(comment_id %in% comments )
+
+```
+```{r}
+
+taget_race <- comm
+
+taget_race['race'] <- rep(0, length(comm$comment_id))
+                       
+taget_race <- within(taget_race, race[target_race_asian == 'True']<-'asain')
+taget_race <- within(taget_race, race[target_race_black == 'True']<-'black')
+taget_race <- within(taget_race, race[target_race_latinx == 'True']<-'latinx')
+taget_race <- within(
+  taget_race, race[target_race_middle_eastern == 'True']<-'middle_eastern')
+taget_race <- within(
+  taget_race, race[target_race_native_american == 'True']<-'native_american')
+taget_race <- within(
+  taget_race, race[target_race_pacific_islander == 'True']<-'pacific_islander')
+taget_race <- within(taget_race, race[target_race_white == 'True']<-'white')
+taget_race <- within(taget_race, race[target_race_other == 'True']<-'other')
+# taget_race <- within(taget_race, race[target_race == 'True']<-'any')
+taget_race <- taget_race %>% filter(race != 0 )
+
+```
+
+```{r}
+ggplot(taget_race, aes(x=race))+
+  geom_bar(fill='dark blue') +
+  labs(
+    x = "Target Race",
+    y = "Counter",
+    fill = "Class",
+    title = "Target Race Distribution",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+        
+        
+  )
+
+```
+
+
+
+
+
+
+
