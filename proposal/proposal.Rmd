@@ -1,6 +1,6 @@
 ---
-title: "Presentation"
-author: "Eran Aizikovich"
+title: "Proposal"
+author: "Eran Aizikovich and Yuval Segal"
 date: "5/16/2022"
 output: html_document
 ---
@@ -10,13 +10,19 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+```{r}
+getwd()
+```
+
 ## R Markdown
 The big Q: How he annotator's background effects his way of annotating? 
 Lets Start, load file csv
 
+
 ```{r}
+path <- setwd("..")
 df_1 <- read.csv(
-  "C:\\Users\\Eran Aizikovich\\Documents\\FinalProjectHateSpeeech\\measuring_hate_speech.csv")
+  "data\\measuring_hate_speech.csv")
 glimpse(df_1)
 ```
 
@@ -29,38 +35,61 @@ df <- df[,cols]
 
 ```
 
-```{r}
-
-```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Annotator
 ```{r}
 ## Take only annotators that tagged more then 20 comments
-annotators <- df %>% count(annotator_id)
-annotators <- (annotators %>% filter(n >19))$annotator_id
-anno <- df_1 %>% filter(annotator_id %in% annotators)
+annotators <- df %>% 
+count(annotator_id) %>%
+filter(n >19)
+anno <- df_1 %>% filter(annotator_id %in% annotators$annotator_id)
 
+```
+
+
+```{r}
+count_annot <- df %>% count(annotator_id)
+
+ggplot(count_annot, aes(x=n))+
+  geom_bar(fill = 'dark red') +
+  labs(
+    x = "Post count",
+    y = "Annotators count",
+    fill = "Class",
+    title = "Number of posts annotated by each individual",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+        
+        
+  )
 ```
 
 ```{r}
 
-
-
-df_race <- anno
+df_wo_red <- anno
                 
-df_race['race'] <- rep(0, 49875)
+df_wo_red['annotator_race'] <- rep(0, 49875)
                        
-df_race <- within(df_race, race[annotator_race_asian == 'True']<-'asain')
-df_race <- within(df_race, race[annotator_race_black == 'True']<-'black')
-df_race <- within(df_race, race[annotator_race_latinx == 'True']<-'latinx')
-df_race <- within(df_race, race[annotator_race_middle_eastern == 'True']<-'middle_eastern')
-df_race <- within(df_race, race[annotator_race_native_american == 'True']<-'native_american')
-df_race <- within(df_race, race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
-df_race <- within(df_race, race[annotator_race_white == 'True']<-'white')
-df_race <- within(df_race, race[annotator_race_other == 'True']<-'other')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_asian == 'True']<-'asain')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_black == 'True']<-'black')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_latinx == 'True']<-'latinx')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_middle_eastern == 'True']<-'middle_eastern')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_native_american == 'True']<-'native_american')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_white == 'True']<-'white')
+df_wo_red <- within(df_wo_red, annotator_race[annotator_race_other == 'True']<-'other')
+df_wo_red <- subset(df_wo_red, select = -c(annotator_race_asian, annotator_race_black, annotator_race_latinx, annotator_race_middle_eastern, annotator_race_native_american, annotator_race_pacific_islander, annotator_race_white, annotator_race_other))
+df_wo_red 
+
 
 ```
+###yes
 ```{r}
-ggplot(df_race, aes(x=race))+
+ggplot(df_wo_red, aes(x=race))+
   geom_bar(fill = 'dark red') +
   labs(
     x = "Annotator Race",
@@ -77,12 +106,18 @@ ggplot(df_race, aes(x=race))+
   )
 
 ```
+
+
+
+
+##Target
 ```{r}
 comments <- df %>% count(comment_id)
 comments <- (comments %>% filter(n >19))$comment_id
 comm <- df_1 %>% filter(comment_id %in% comments )
 
 ```
+
 ```{r}
 
 taget_race <- comm
