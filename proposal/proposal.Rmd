@@ -38,15 +38,14 @@ df <- df[,cols]
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ## Annotator
+### Posts per annotator
 ```{r}
 ## Take only annotators that tagged more then 20 comments
 annotators <- df %>% 
 count(annotator_id) %>%
 filter(n >19)
 anno <- df_1 %>% filter(annotator_id %in% annotators$annotator_id)
-
 ```
-
 
 ```{r}
 count_annot <- df %>% count(annotator_id)
@@ -61,16 +60,15 @@ ggplot(count_annot, aes(x=n))+
     
   )+
   theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
-        
         axis.line = element_line( colour = "black")
-        
-        
   )
 ```
 
+
+### Race
 ```{r}
 
-df_wo_red <- anno
+df_wo_red <- filter(anno, target_race=TRUE)
                 
 df_wo_red['annotator_race'] <- rep(0, 49875)
                        
@@ -82,14 +80,98 @@ df_wo_red <- within(df_wo_red, annotator_race[annotator_race_native_american == 
 df_wo_red <- within(df_wo_red, annotator_race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
 df_wo_red <- within(df_wo_red, annotator_race[annotator_race_white == 'True']<-'white')
 df_wo_red <- within(df_wo_red, annotator_race[annotator_race_other == 'True']<-'other')
-df_wo_red <- subset(df_wo_red, select = -c(annotator_race_asian, annotator_race_black, annotator_race_latinx, annotator_race_middle_eastern, annotator_race_native_american, annotator_race_pacific_islander, annotator_race_white, annotator_race_other))
-df_wo_red 
 
 
 ```
-###yes
 ```{r}
-ggplot(df_wo_red, aes(x=race))+
+
+df_wo_red['target_race'] <- NA
+
+df_wo_red <- within(df_wo_red, target_race[target_race_asian == 'True']<-'asain')
+df_wo_red <- within(df_wo_red, target_race[target_race_black == 'True']<-'black')
+df_wo_red <- within(df_wo_red, target_race[target_race_latinx == 'True']<-'latinx')
+df_wo_red <- within(df_wo_red, target_race[target_race_middle_eastern == 'True']<-'middle_eastern')
+df_wo_red <- within(df_wo_red, target_race[target_race_native_american == 'True']<-'native_american')
+df_wo_red <- within(df_wo_red, target_race[target_race_pacific_islander == 'True']<-'pacific_islander')
+df_wo_red <- within(df_wo_red, target_race[target_race_white == 'True']<-'white')
+df_wo_red <- within(df_wo_red, target_race[target_race_other == 'True']<-'other')
+
+
+
+```
+```{r}
+anno2 <- subset(df_wo_red, select = c(target_race, annotator_race))
+anno2 <- drop_na(anno2, target_race)
+anno2
+```
+
+
+### Clean unrelated data
+```{r}
+anno_wo_red <- subset(df_wo_red, select = -c(annotator_race_asian, annotator_race_black, annotator_race_latinx, annotator_race_middle_eastern, annotator_race_native_american, annotator_race_pacific_islander, annotator_race_white, annotator_race_other))
+
+anno_wo_red <- subset(anno_wo_red, select = -c( target_race_asian, target_race_black,
+target_race_latinx, target_race_middle_eastern, target_race_native_american,
+target_race_pacific_islander, target_race_white, target_race_other,
+target_race, target_religion_atheist, target_religion_buddhist,
+target_religion_christian, target_religion_hindu, target_religion_jewish,
+target_religion_mormon, target_religion_muslim, target_religion_other,
+target_religion, target_origin_immigrant, target_origin_migrant_worker,
+target_origin_specific_country, target_origin_undocumented, target_origin_other,
+target_origin, target_gender_men, target_gender_non_binary,
+target_gender_transgender_men, target_gender_transgender_unspecified, target_gender_transgender_women,
+target_gender_women, target_gender_other, target_gender,
+target_sexuality_bisexual, target_sexuality_gay, target_sexuality_lesbian,
+target_sexuality_straight, target_sexuality_other, target_sexuality,
+target_age_children, target_age_teenagers, target_age_young_adults,
+target_age_middle_aged, target_age_seniors, target_age_other,
+target_age, target_disability_physical, target_disability_cognitive,
+target_disability_neurological, target_disability_visually_impaired, target_disability_hearing_impaired,
+target_disability_unspecific, target_disability_other, target_disability, text, platform,
+sentiment, respect, insult,
+humiliate, status, dehumanize,
+violence, genocide, attack_defend,
+hatespeech, hate_speech_score, text,
+infitms, outfitms, annotator_severity,
+std_err, annotator_infitms, annotator_outfitms,
+hypothesis, comment_id, annotator_income_.10k, annotator_income_10k.50k, annotator_income_50k.100k,
+annotator_income_100k.200k, annotator_income_.200k, annotator_ideology_extremeley_conservative,
+annotator_ideology_conservative, annotator_ideology_slightly_conservative, annotator_ideology_neutral,
+annotator_ideology_slightly_liberal, annotator_ideology_liberal, annotator_ideology_extremeley_liberal,
+annotator_ideology_no_opinion, annotator_education_some_high_school, annotator_education_high_school_grad,
+annotator_education_some_college, annotator_education_college_grad_aa, annotator_education_college_grad_ba,
+annotator_education_professional_degree, annotator_education_masters, annotator_education_phd, annotator_gender_men, annotator_gender_women, annotator_gender_non_binary, annotator_gender_prefer_not_to_say, annotator_gender_self_describe, annotator_transgender, annotator_cisgender, annotator_transgender_prefer_not_to_say))
+anno_wo_red
+```
+```{r}
+anno_wo_red
+```
+
+### Religion
+
+```{r}
+anno_wo_red['annotator_religion'] <- NA
+                       
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_atheist == 'True']<-'atheist')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_buddhist == 'True']<-'buddhist')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_christian == 'True']<-'christian')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_hindu == 'True']<-'hindu')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_jewish == 'True']<-'jewish')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_mormon == 'True']<-'mormon')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_muslim == 'True']<-'muslim')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_nothing == 'True']<-'nothing')
+anno_wo_red <- within(anno_wo_red, annotator_religion[annotator_religion_other == 'True']<-'other')
+
+anno_wo_red <- subset(df_wo_red, select = -c(annotator_religion_atheist, annotator_religion_buddhist, annotator_religion_christian, annotator_religion_hindu, annotator_religion_jewish, annotator_religion_mormon, annotator_religion_muslim, annotator_religion_nothing, annotator_religion_other))
+anno_wo_red
+```
+
+```{r}
+anno_wo_red %>% group_by_all%>%count%>%arrange(annotator_id)
+```
+
+```{r}
+ggplot(anno_wo_red, aes(x=annotator_race))+
   geom_bar(fill = 'dark red') +
   labs(
     x = "Annotator Race",
@@ -101,13 +183,9 @@ ggplot(df_wo_red, aes(x=race))+
   theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
         
         axis.line = element_line( colour = "black")
-        
-        
   )
 
 ```
-
-
 
 
 ##Target
@@ -158,6 +236,237 @@ ggplot(taget_race, aes(x=race))+
   )
 
 ```
+
+
+
+
+
+### Eran
+
+
+```{r}
+## Take only annotators that tagged more then 20 comments
+annotators <- df %>% count(annotator_id)
+annotators <- (annotators %>% filter(n >19))
+anno <- df_1 %>% filter(annotator_id %in% annotators$annotator_id)
+glimpse(anno)
+```
+
+```{r}
+df_race <- anno
+                
+df_race['race'] <- rep(0, 49875)
+                       
+df_race <- within(df_race, race[annotator_race_asian == 'True']<-'asain')
+df_race <- within(df_race, race[annotator_race_black == 'True']<-'black')
+df_race <- within(df_race, race[annotator_race_latinx == 'True']<-'latinx')
+df_race <- within(df_race, race[annotator_race_middle_eastern == 'True']<-'middle_eastern')
+df_race <- within(df_race, race[annotator_race_native_american == 'True']<-'native_american')
+df_race <- within(df_race, race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
+df_race <- within(df_race, race[annotator_race_white == 'True']<-'white')
+df_race <- within(df_race, race[annotator_race_other == 'True']<-'other')
+
+```
+```{r}
+ggplot(df_race, aes(x=race))+
+  geom_bar(fill = 'dark red') +
+  labs(
+    x = "Annotator Race",
+    y = "Counter",
+    fill = "Class",
+    title = "Annotator Race Distribution",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+  )
+
+```
+
+```{r}
+combo <- c('annotator_income_.10k',
+            'annotator_income_10k.50k',
+            'annotator_income_50k.100k',
+            'annotator_income_100k.200k',
+            'annotator_income_.200k')
+
+income <- anno[,combo]
+income['income_level'] <- rep(0, 49875)
+
+
+income <- within(income, income_level[annotator_income_.10k == 'True']<-'less_then_10k')
+income <- within(income, income_level[annotator_income_10k.50k == 'True']<-'10k_to_50k')
+income <- within(income, income_level[annotator_income_50k.100k == 'True']<-'50k_to_100k')
+income <- within(income, income_level[annotator_income_100k.200k == 'True']<-'100k_to_200k')
+income <- within(income, income_level[annotator_income_.200k == 'True']<-'more_then_200k')
+income <- income %>% filter(income_level != 0 )
+```
+```{r}
+ggplot(income, aes(x=income_level))+
+  geom_bar(fill = 'dark red') +
+  labs(
+    x = "Income Per Year",
+    y = "Counter",
+    fill = "Class",
+    title = "Annotator Income Per Year Distribution",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+        
+        
+  )
+
+```
+# target
+```{r}
+comments <- df %>% count(comment_id)
+comments <- (comments %>% filter(n >19))
+comm <- df_1 %>% filter(comment_id %in% comments$comment_id )
+
+```
+# race plot
+```{r}
+
+taget_race <- comm
+
+taget_race['race'] <- rep(0, length(comm$comment_id))
+                       
+taget_race <- within(taget_race, race[target_race_asian == 'True']<-'asain')
+taget_race <- within(taget_race, race[target_race_black == 'True']<-'black')
+taget_race <- within(taget_race, race[target_race_latinx == 'True']<-'latinx')
+taget_race <- within(
+  taget_race, race[target_race_middle_eastern == 'True']<-'middle_eastern')
+taget_race <- within(
+  taget_race, race[target_race_native_american == 'True']<-'native_american')
+taget_race <- within(
+  taget_race, race[target_race_pacific_islander == 'True']<-'pacific_islander')
+taget_race <- within(taget_race, race[target_race_white == 'True']<-'white')
+taget_race <- within(taget_race, race[target_race_other == 'True']<-'other')
+# taget_race <- within(taget_race, race[target_race == 'True']<-'any')
+taget_race <- taget_race %>% filter(race != 0 )
+
+```
+```{r}
+ggplot(taget_race, aes(x=race))+
+  geom_bar(fill='dark blue') +
+  labs(
+    x = "Target Race",
+    y = "Counter",
+    fill = "Class",
+    title = "Target Race Distribution",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+        
+        
+  )
+
+```
+# religion
+```{r}
+relig <- c('target_religion_atheist',
+            'target_religion_buddhist',
+            'target_religion_christian',
+            'target_religion_hindu',
+            'target_religion_jewish',
+            'target_religion_mormon',
+            'target_religion_muslim',
+            'target_religion_other')
+traget_relig <- comm[,relig]
+traget_relig['relig'] <- rep(0, length(comm$comment_id))
+                       
+traget_relig <- within(traget_relig, relig[target_religion_atheist == 'True']<-'atheist')
+traget_relig <- within(traget_relig, relig[target_religion_buddhist == 'True']<-'uddhist')
+traget_relig <- within(traget_relig, relig[target_religion_hindu == 'True']<-'hindu')
+traget_relig <- within(traget_relig, relig[target_religion_jewish == 'True']<-'jewish')
+traget_relig <- within(traget_relig, relig[target_religion_mormon == 'True']<-'mormon')
+traget_relig <- within(traget_relig, relig[target_religion_muslim == 'True']<-'muslim')
+traget_relig <- within(traget_relig, relig[target_religion_other == 'True']<-'other')
+
+traget_relig <- traget_relig %>% filter(relig != 0 )
+head(traget_relig)
+```
+```{r}
+ggplot(traget_relig, aes(x=relig))+
+  geom_bar(fill='dark blue') +
+  labs(
+    x = "Target Religion",
+    y = "Counter",
+    fill = "Class",
+    title = "Target Religion Distribution",
+    
+  )+
+  theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+        
+        axis.line = element_line( colour = "black")
+        
+        
+  )
+
+```
+
+
+```{r}
+both <- df_1
+both['target_race'] <- rep(0, length(both$comment_id))
+both['anno_race'] <- rep(0, length(both$comment_id))
+
+
+
+both <- within(both, target_race[target_race_asian == 'True']<-'asain')
+both <- within(both, target_race[target_race_black == 'True']<-'black')
+both <- within(both, target_race[target_race_latinx == 'True']<-'latinx')
+both <- within(both, target_race[target_race_middle_eastern == 'True']<-'middle_eastern')
+both <- within(both, target_race[target_race_pacific_islander == 'True']<-'pacific_islander')
+both <- within(both, target_race[target_race_white == 'True']<-'white')
+both <- within(both, target_race[target_race_other == 'True']<-'other')
+
+both <- within(both, anno_race[annotator_race_asian == 'True']<-'asain')
+both <- within(both, anno_race[annotator_race_black == 'True']<-'black')
+both <- within(both, anno_race[annotator_race_latinx == 'True']<-'latinx')
+both <- within(both, anno_race[annotator_race_middle_eastern == 'True']<-'middle_eastern')
+both <- within(both, anno_race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
+both <- within(both, anno_race[annotator_race_white == 'True']<-'white')
+both <- within(both, anno_race[annotator_race_other == 'True']<-'other')
+
+both <- both %>% filter(anno_race != 0 )
+both <- both %>% filter(target_race != 0)
+
+both <- both[,c('target_race','anno_race')]
+target_count <- both %>% count(target_race)
+anoo_count <- both %>% count(anno_race)
+```
+```{r}
+colnames(anoo_count) <- c('race', 'annotator')
+colnames(target_count) <- c('race', 'target')
+anoo_count['target'] <- target_count$target
+
+race_count <- anoo_count
+# race_count <-subset(race_count, c(race, annotator, target))
+race_count['p'] <- race_count$annotator/(race_count$annotator+race_count$target)
+race_count
+```
+
+
+```{r}
+ggplot(race_count, aes(x=seq(0, 1, by = 0.1), y=race, fill=p))+
+  geom_col(position='fill') +
+  labs(
+    x = "Income Per Year",
+    y = "Annotator",
+    title = "Annotator Income Per Year Distribution"
+  )
+        
+  )
+```
+
+
+
 
 
 
