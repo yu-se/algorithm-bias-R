@@ -122,10 +122,10 @@ anno_wo_red
 ```{r}
 anno_wo_red['annotator_sexuality'] <- NA
                        
-anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_bisexual == 'True']<-'atheist')
-anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_gay == 'True']<-'buddhist')
-anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_straight == 'True']<-'christian')
-anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_other == 'True']<-'hindu')
+anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_bisexual == 'True']<-'bisexual')
+anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_gay == 'True']<-'gay')
+anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_straight == 'True']<-'straight')
+anno_wo_red <- within(anno_wo_red, annotator_sexuality[annotator_sexuality_other == 'True']<-'other')
 ```
 
 ### Clean unrelated data
@@ -285,6 +285,7 @@ df_race <- within(df_race, race[annotator_race_white == 'True']<-'white')
 df_race <- within(df_race, race[annotator_race_other == 'True']<-'other')
 
 ```
+
 ```{r}
 ggplot(df_race, aes(x=race))+
   geom_bar(fill = 'dark red') +
@@ -310,7 +311,7 @@ combo <- c('annotator_income_.10k',
             'annotator_income_.200k')
 
 income <- anno[,combo]
-income['income_level'] <- rep(0, 49875)
+income['income_level'] <- NA
 
 
 income <- within(income, income_level[annotator_income_.10k == 'True']<-'less_then_10k')
@@ -320,6 +321,7 @@ income <- within(income, income_level[annotator_income_100k.200k == 'True']<-'10
 income <- within(income, income_level[annotator_income_.200k == 'True']<-'more_then_200k')
 income <- income %>% filter(income_level != 0 )
 ```
+
 ```{r}
 ggplot(income, aes(x=income_level))+
   geom_bar(fill = 'dark red') +
@@ -365,8 +367,10 @@ taget_race <- within(taget_race, race[target_race_white == 'True']<-'white')
 taget_race <- within(taget_race, race[target_race_other == 'True']<-'other')
 # taget_race <- within(taget_race, race[target_race == 'True']<-'any')
 taget_race <- taget_race %>% filter(race != 0 )
+taget_race
 
 ```
+
 ```{r}
 ggplot(taget_race, aes(x=race))+
   geom_bar(fill='dark blue') +
@@ -388,7 +392,7 @@ ggplot(taget_race, aes(x=race))+
 ### religion
 
 ```{r}
-ggplot(traget_relig, aes(x=relig))+
+ggplot(taget_race, aes(x=relig))+
   geom_bar(fill='dark blue') +
   labs(
     x = "Target Religion",
@@ -425,8 +429,8 @@ both <- within(both, target_race[target_race_other == 'True']<-'other')
 both <- within(both, anno_race[annotator_race_asian == 'True']<-'asain')
 both <- within(both, anno_race[annotator_race_black == 'True']<-'black')
 both <- within(both, anno_race[annotator_race_latinx == 'True']<-'latinx')
-both <- within(both, anno_race[annotator_race_middle_eastern == 'True']<-'middle_eastern')
-both <- within(both, anno_race[annotator_race_pacific_islander == 'True']<-'pacific_islander')
+both <- within(both, anno_race[annotator_race_middle_eastern == 'True']<-'other')
+both <- within(both, anno_race[annotator_race_pacific_islander == 'True']<-'other')
 both <- within(both, anno_race[annotator_race_white == 'True']<-'white')
 both <- within(both, anno_race[annotator_race_other == 'True']<-'other')
 
@@ -436,7 +440,65 @@ both <- both %>% filter(target_race != 0)
 both <- both[,c('target_race','anno_race')]
 target_count <- both %>% count(target_race)
 anoo_count <- both %>% count(anno_race)
+anoo_count
 ```
+
+```{r}
+count_races <- count(both, target_race, anno_race)
+# vals <- expand.grid(target_race = unique(count_races$target_race),
+#                     anno_race = unique(count_races$anno_race),
+#                     n = 0)
+# vals<-merge(vals,count_races,all = TRUE)
+# vals
+count_races
+```
+
+# ```{r}
+# library(alluvial)
+# pal = RColorBrewer::brewer.pal(2, "Set1")
+# ## Warning in RColorBrewer::brewer.pal(2, "Set1"): minimal value for n is 3, returning requested palette with 3 different levels
+#   with(both,
+#      alluvial(target_race, anno_race, Sex, freq = Freq, col = pal[as.numeric(Sex)]))
+# ```
+
+
+```{r}
+# packages.install("tidyverse")
+install.packages("ggalluvial")
+library(tidyverse)
+library(ggalluvial)
+```
+
+```{r}
+# count_races <- within(count_races, anno_race[anno_race == 'middle_eastern']<-'other')
+# count_races <- within(count_races, anno_race[anno_race == 'pacific_islander']<-'other')
+# 
+# count_races
+```
+
+```{r}
+
+
+ggplot(count_races,
+       aes( axis1 = anno_race, axis2 = target_race, y=n)) +
+    geom_alluvium(aes(fill = target_race, color = target_race), 
+                  width = 4/12, alpha = 0.5, knot.pos = 0.4) +
+    geom_stratum(width = 1/4,color = "grey") +
+    scale_fill_manual(values  =c("darkred", "darkorange4", "darkgoldenrod4", "darkolivegreen4", "cadetblue4", "#95CC5E", "lightgrey")) +
+    scale_color_manual(values = c("darkred", "darkorange4", "darkgoldenrod4", "darkolivegreen4", "cadetblue4", "#95CC5E", "lightgrey")) +
+    geom_text(stat = "stratum", aes(label = after_stat(stratum)), size=3) +
+    scale_x_continuous(breaks = 1:2, labels = c("Annotators", "Target"))  +
+    theme_minimal() +
+    theme(
+        legend.position = "left",
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 14, face = "bold")
+    )
+```
+
+
 ```{r}
 colnames(anoo_count) <- c('race', 'annotator')
 colnames(target_count) <- c('race', 'target')
@@ -450,15 +512,25 @@ race_count
 
 
 ```{r}
-ggplot(race_count, aes(x=seq(0, 1, by = 0.1), y=race, fill=p))+
-  geom_col(position='fill') +
+# ggplot()+
+  barplot(prop.table(race_count$target, race_count$annotator, margin = 2), xlab='race') +
   labs(
     x = "Income Per Year",
     y = "Annotator",
     title = "Annotator Income Per Year Distribution"
   )
         
-  )
+
+```
+```{r}
+library(graphics)
+(spineplot(margin.table(race_count, c(3, 2)),
+           main = "Applications at UCB"))
+(spineplot(margin.table(race_count, c(3, 1)),
+           main = "Admissions at UCB"))
+```
+```{r}
+margin.table(race_count$race, c(3, 2))
 ```
 
 
