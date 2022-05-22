@@ -246,13 +246,13 @@ count_races <- count(race_filter, target_race, annotator_race)
 ggplot(count_races,
        aes( axis1 = annotator_race, axis2 = target_race, y=n)) +
     geom_alluvium(aes(fill = target_race, color = target_race), 
-                  width = 4/12, alpha = 0.5, knot.pos = 0.4) +
+                  width = 4/12, alpha = 0.3, knot.pos = 0.4) +
     geom_stratum(width = 1/4,color = "grey") +
     scale_fill_manual(values=c("red", "blue", "yellow", "purple",
                                "cadetblue4", "#95CC5E", "lightgrey", "green"))+
     scale_color_manual(values=c("red", "blue", "yellow", "purple",
                                 "cadetblue4", "#95CC5E", "lightgrey", "green"))+
-    geom_text(stat = "stratum", aes(label = after_stat(stratum)), size=2) +
+    geom_text(stat = "stratum", aes(label = after_stat(stratum)), size=2.53) +
     scale_x_continuous(breaks = 1:2, labels = c("Annotators", "Target"))  +
     theme_minimal() +
     theme(
@@ -260,17 +260,17 @@ ggplot(count_races,
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         axis.text.y = element_blank(),
-        axis.text.x = element_text(size = 14, face = "bold"),
+        axis.text.x = element_text(size = 11, face = "bold"),
         )+
     labs(
-      title = "Common Distribution Between - Targets Race & Annotators Race",
-      subtitle = "Colours represent the target race",
+        title = "Distribution of annotators race vs target race",
+      subtitle = "Emphasizes the Annotators Race and the race of the target they tagged",
       y = 'Races'
       
     )
 ```
 
-As we can see in the age of the annotators approximately normal distribution is around mu=30.
+As we can see the average age of the annotator is about 30, and the distribution is inclined towards the younger age.
 
 ```{r, echo=FALSE ,warning=FALSE}
 p1 <- ggplot(df_wo_red, aes(x=annotator_age))+
@@ -289,9 +289,9 @@ p2 <-  ggplot(df_wo_red, aes(x=annotator_age))+
   geom_bar(fill = 'dark red', alpha =0.3) +
   labs(
     x = "Age ",
-    y = "Counter",
+    y = "Count",
     
-    title = "Nunber of annotators age",
+    title = "Number of annotators age",
     
   )+
   theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
@@ -301,16 +301,15 @@ p2 <-  ggplot(df_wo_red, aes(x=annotator_age))+
 grid.arrange(p1,p2, ncol=2)
 ```
 
-In the next plot, it looks like the way that all the races measure hate speech is the same but is it so? 
+Here it looks like the way that all the races measure hate speech is the same but is it so? 
 In the next graphs, we will see that not so much.
-
 
 ```{r, echo=FALSE}
 ggplot(race_filter, aes (x = hate_speech_score, fill = annotator_race))+
   geom_density(alpha =0.2)+
   labs(
-    title = "Density for hate speech score", 
-    subtitle = "Fill for the annotator race", 
+    title = "Density for hate speech score by race", 
+    subtitle = "color is for the annotator race", 
     x= "hate speech score", 
     y = "density",
     fill = "Annotator Race")+
@@ -350,8 +349,8 @@ plot_w <- ggplot(white_anno, aes (x = hate_speech_score, fill = target_race))+
   geom_density(alpha =0.2)+
    scale_fill_manual(values=c("red", "blue", "yellow",'green'))+
   labs(
-    title = "Density for score by white annotator", 
-    subtitle = "Fill for the target's race", 
+    title = "White annotator", 
+    subtitle = "Density of score by target race", 
     x= "Hate Speech Score", 
     y = "Density",
     fill = "Traget")+
@@ -362,8 +361,8 @@ plot_b <- ggplot(black_anno, aes (x = hate_speech_score, fill = target_race))+
   geom_density(alpha =0.2)+
    scale_fill_manual(values=c("red", "blue", "yellow",'green'))+
   labs(
-    title = "Density for score by black annotator", 
-    subtitle = "Fill for the target's race", 
+    title = "Black annotator", 
+    subtitle = "Density of score by target race", 
     x= "Hate Speech Score", 
     y = "Density",
     fill = "Traget")+
@@ -373,22 +372,22 @@ plot_a <- ggplot(asian_anno, aes (x = hate_speech_score, fill = target_race))+
   geom_density(alpha =0.2)+
    scale_fill_manual(values=c("red", "blue", "yellow",'green'))+
   labs(
-    title = "Density for score by asian annotator", 
-    subtitle = "Fill for the target's race", 
+    title = "Asian annotator", 
+    subtitle = "Density of score by target race", 
     x= "Hate Speech Score", 
     y = "Density",
-    fill = "Traget")+
+    fill = "Target")+
   theme_minimal()
 
 plot_l <- ggplot(latin_anno, aes (x = hate_speech_score, fill = target_race))+
   geom_density(alpha =0.2)+
    scale_fill_manual(values=c("red", "blue", "yellow",'green'))+
   labs(
-    title = "Density for score by latin annotator", 
-    subtitle = "Fill for the target's race", 
+    title = "Latin annotator", 
+    subtitle = "Density of score by target race", 
     x= "Hate Speech Score", 
     y = "Density",
-    fill = "Traget")+
+    fill = "Target")+
   theme_minimal()
 
 ```
@@ -400,17 +399,18 @@ grid.arrange(plot_w, plot_b, plot_a, plot_l, ncol=2)
 
 ## 4. Data analysis plan
 
-We will try to predict the significance of the difference between the way annotators from different backgrounds are choosing to score hate speech. To do so we will try to find which features give us the most variance explained.
+We will try to predict the significance of the difference between the way annotators from different backgrounds are choosing to score hate speeches. To do so we will try to find which features gives us the largest variance and significance between different backrounds.
 
-For the prediction above we will use basic statistical methods such as Pearson correlation, the covariance between variables, and linear regression models.
+For the prediction we will use basic statistical methods such as Pearson correlation, the covariance between variables, and linear regression models.
 
-The results we need to see to support our hypothesis are strong connections between the way people see hate speech and their background.
-We choose to divide the work as follows: one of us is more responsible for statistical concepts while the other is more focused on the visualization and explanation parts.
+The results we would like to see, to support our hypothesis, are strong connections between the way people see hate speech and their background.
+We chose to divide the work as follow: one of us is more responsible for the statistical concepts while the other is more focused on prepare the data and the visualization parts.
 
 
 ## Appendix
-GitHub:
-  https://github.com/yo21/algorithm-bias-R/tree/master
+
+Our GitHub:
+  https://github.com/yo21/algorithm-bias-R
 
 ### Articles about Algorithms bias: 
  
