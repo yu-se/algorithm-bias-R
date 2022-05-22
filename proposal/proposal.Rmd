@@ -197,9 +197,9 @@ race_filter <- df_wo_red %>% filter(df_wo_red['target_race'] != 0)
 p_target <- ggplot(race_filter, aes(x=target_race))+
   geom_bar(fill = 'dark blue', alpha =0.3) +
   labs(
-    x = "Traget Race",
+    x = "Tragets Race",
     y = "Counter",
-    title = "Number of Target for each Race",
+    title = "Number of Targets for each Race",
     subtitle ="Dark blue fill for targets",
   )+
   theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
@@ -211,9 +211,9 @@ race_filter <- race_filter %>% filter(race_filter['annotator_race'] != 0)
 p_anno <- ggplot(race_filter, aes(x=annotator_race))+
   geom_bar(fill = 'dark red', alpha =0.3) +
   labs(
-    x = "Traget Race",
+    x = "annotator Race",
     y = "Counter",
-    title = "Number of Target for each Race",
+    title = "Number of annotators for each Race",
     subtitle ="Dark red fill for annotator",
   )+
   theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
