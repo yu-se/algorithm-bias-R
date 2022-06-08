@@ -10,11 +10,11 @@ output:
 
 
 ```{r load-packages, include = FALSE}
+
 library(knitr)
 library(tidyverse)
 library(broom)
 library(htmltools)
-library("tidyverse")
 library("ggalluvial")
 library("gridExtra") 
 ```
@@ -309,7 +309,9 @@ ggplot(race_filter, aes (x = hate_speech_score, fill = annotator_race))+
   theme_minimal()
 ```
 
-As promised in the next graphs we are diving into more detail, and it is very interesting to see that all races measured lower hate scores when their target is white.
+As promised in the next graphs we are diving into more detail,  
+and it is very interesting to see that all races measured lower  
+hate scores when their target is white.
 
 ```{r, echo=FALSE}
 white_anno <- race_filter %>% filter(annotator_race == 'white'&
@@ -392,12 +394,12 @@ grid.arrange(plot_w, plot_b, plot_a, plot_l, ncol=2)
 
 ## 4. Data analysis plan
 
-We will try to predict the significance of the difference between the way annotators from different backgrounds are choosing to score hate speeches. To do so we will try to find which features gives us the largest variance and significance between different backrounds.
+We will try to predict the significance of the difference between the way annotators from different backgrounds are choosing to score hate speeches. To do so we will try to find which features gives us the largest variance and significance between different backgrounds.
 
 For the prediction we will use basic statistical methods such as Pearson correlation, the covariance between variables, and linear regression models.
 
 The results we would like to see, to support our hypothesis, are strong connections between the way people see hate speech and their background.
-We chose to divide the work as follow: one of us is more responsible for the statistical concepts while the other is more focused on prepare the data and the visualization parts.
+We chose to divide the work as follow: one of us is more responsible for the statistical concepts while the other is more focused on preparing the data and the visualization parts.
 
 
 ## Appendix
