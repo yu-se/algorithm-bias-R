@@ -22,3 +22,111 @@ path <- setwd("..")
 df <- read.csv(
   "data\\data_no_red.csv")
 ```
+
+```{r}
+cols <- c('comment_id','annotator_id', 'hatespeech', 'hate_speech_score',
+          'annotator_severity', 'std_err','annotator_infitms' )
+```
+
+
+```{r}
+g1 <- ggplot(df, aes(x=annotator_severity))+
+        geom_density(fill = 'dark red', alpha =0.3) +
+        
+        labs(title = "Annotator Severity")+  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+g2 <-  ggplot(df, aes(x=hate_speech_score))+
+        geom_density(fill = 'dark red', alpha =0.3) +
+        
+        labs(title = "Hate Speech Score")+
+                  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+g3 <-  ggplot(df, aes(x=hypothesis))+
+        geom_density(fill = 'dark red', alpha =0.3) +
+        
+        labs(title = "Hypothesis")+
+                  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+g4 <-  ggplot(df, aes(x=std_err))+
+        geom_density(fill = 'dark red', alpha =0.3) +
+        
+        labs(title = "STD error")+
+                  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+grid.arrange(g1,g2,g3, g4,ncol=2)
+
+```
+
+```{r}
+
+g1 <- ggplot(df, aes(x=insult))+
+        geom_bar(fill = 'dark green', alpha =0.3) +
+        
+        labs(title = "Insult")+  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+g2 <-  ggplot(df, aes(x=humiliate))+
+        geom_bar(fill = 'dark green', alpha =0.3) +
+        
+        labs(title = "Humiliate")+
+                  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+g3 <-  ggplot(df, aes(x=dehumanize))+
+        geom_bar(fill = 'dark green', alpha =0.3) +
+        
+        labs(title = "Dehumanize")+
+                  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+g4 <-  ggplot(df, aes(x=violence))+
+        geom_bar(fill = 'dark green', alpha =0.3) +
+        
+        labs(title = "violence")+
+                  
+        
+        theme(axis.text.x = element_text(angle = 75,vjust = 0.5),
+              axis.line = element_line( colour = "black")
+        )
+
+grid.arrange(g1,g2,g3, g4,ncol=2)
+
+```
+```{r}
+ggplot(df, aes(x=hate_speech_score, y=violence)
+  )+
+  geom_point(
+
+  )
+```
+
+
+```{r}
+df %>% filter(comment_id==17034)
+```
+

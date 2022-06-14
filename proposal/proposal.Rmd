@@ -26,6 +26,10 @@ library("gridExtra")
 path <- setwd("..")
 df <- read.csv(
   "data\\measuring_hate_speech.csv")
+
+```
+```{r}
+df %>% filter(comment_id==32074)
 ```
 
 ## 1. Introduction
@@ -130,6 +134,9 @@ df_wo_red <- within(df_wo_red, target_sexuality[target_sexuality_lesbian == 'Tru
 df_wo_red <- within(df_wo_red, target_sexuality[target_sexuality_straight == 'True']<-'straight')
 df_wo_red <- within(df_wo_red, target_sexuality[target_sexuality_other == 'True']<-'other')
 
+
+
+
 # df_wo_red <- filter(df_wo_red, target_sexuality != 0)
 ```
 
@@ -151,7 +158,7 @@ target_race_latinx, target_race_middle_eastern, target_race_native_american,
 target_race_pacific_islander, target_race_white, target_race_other, target_religion_atheist, target_religion_buddhist,
 target_religion_christian, target_religion_hindu, target_religion_jewish,
 target_religion_mormon, target_religion_muslim, target_religion_other,
-target_religion, target_origin_immigrant, target_origin_migrant_worker,
+target_origin_immigrant, target_origin_migrant_worker,
 target_origin_specific_country, target_origin_undocumented, target_origin_other,
 target_origin, target_gender_men, target_gender_non_binary,
 target_gender_transgender_men, target_gender_transgender_unspecified, target_gender_transgender_women,
@@ -421,9 +428,13 @@ Our GitHub:
 ```{r include_data_readme, comment=''}
 cat(readLines('../data/README.md'), sep = '\n')
 ```
+```{r}
+# this cell write to temp df
+# write.csv(df_wo_red,"C:\\Users\\Eran Aizikovich\\Documents\\algorithm-bias-R\\data\\data_no_red.csv", row.names = FALSE)
+```
 
 ### Source code
 
 ```{r, ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
-
+df_wo_red
 ```
