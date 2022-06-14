@@ -1,0 +1,24 @@
+---
+title: "research"
+author: "Eran Aizikovich"
+date: "6/14/2022"
+output: html_document
+---
+
+
+```{r load-packages, include = FALSE}
+library(knitr)
+library(tidyverse)
+library(broom)
+library(htmltools)
+library("tidyverse")
+library("ggalluvial")
+library("gridExtra") 
+```
+
+```{r include = FALSE}
+# opts_chunk$set(echo=FALSE) # hide source code in the document
+path <- setwd("..")
+df <- read.csv(
+  "data\\data_no_red.csv")
+```
