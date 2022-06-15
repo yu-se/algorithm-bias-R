@@ -150,7 +150,7 @@ col_com <- c("comment_id", "sentiment", "respect", "insult",
 "hatespeech", "hate_speech_score", "infitms", "outfitms", "hypothesis", 
 "target_race", "target_religion", "target_gender", "target_sexuality")
 df_com <-  distinct(df, comment_id, .keep_all = TRUE)[,col_com]
-df_com
+df_com 
 ```
 
 
@@ -181,7 +181,8 @@ strat_sample2 <- df2 %>%
 table(strat_sample2$annotator_age)
 ```
 ```{r}
-(strat_sample2)
-
+#(strat_sample2)
+comme <- df %>% count(comment_id) %>% filter(n==max(comme$n))
+df %>% filter(comment_id == 20011)
 ```
 
