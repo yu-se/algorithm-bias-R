@@ -129,17 +129,24 @@ ggplot(df, aes(x=hate_speech_score, y=violence)
   )
 ```
 
-
+# התחלנו
 ```{r}
 df %>% filter(comment_id==17034)
 ```
 
 ```{r}
-dput(names(df))
+# dput(names(df))
+
+df <- df[,c("comment_id", "annotator_id", "sentiment", "respect", "insult", 
+"humiliate", "dehumanize", "violence", "genocide", "attack_defend", 
+"hatespeech", "hate_speech_score", "std_err", "target_race", "target_religion", "target_gender", "target_sexuality", 
+"annotator_gender", "annotator_educ", "annotator_income", "annotator_ideology", 
+"annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality"
+)]
 ```
 
 ```{r}
-col_an <- c("annotator_id", "annotator_severity", "annotator_infitms", "annotator_outfitms", "annotator_gender", "annotator_educ", "annotator_income", "annotator_ideology", "annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality")
+col_an <- c("annotator_id", "annotator_gender", "annotator_educ", "annotator_income", "annotator_ideology", "annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality")
 df_an <-  distinct(df, annotator_id, .keep_all = TRUE)[, col_an]
 df_an
 
@@ -147,15 +154,14 @@ df_an
 ```{r}
 col_com <- c("comment_id", "sentiment", "respect", "insult", 
 "humiliate", "dehumanize", "violence", "genocide", "attack_defend", 
-"hatespeech", "hate_speech_score", "infitms", "outfitms", "hypothesis", 
-"target_race", "target_religion", "target_gender", "target_sexuality")
+"hatespeech", "hate_speech_score", "target_race", "target_religion", "target_gender", "target_sexuality")
 df_com <-  distinct(df, comment_id, .keep_all = TRUE)[,col_com]
 df_com 
 ```
 
 
 ```{r}
-df2<-df[!(df$annotator_race==0),]
+df2<-df[!(df$annotator_race==0 | df$annotator_race=="pacific_islander"),]
 table(df2$annotator_race)
 
 ```
@@ -163,12 +169,23 @@ table(df2$annotator_race)
 ```{r}
 #obtain stratified sample
 strat_sample <- df2 %>%
-                  group_by(annotator_race) %>%
-                  sample_n(size=100)
+                  group_by(comment_id, annotator_race) %>%
+                  sample_n(size=1)
 ```
-```{r}
-table(strat_sample$annotator_race)
 
+```{r}
+# table(strat_sample$comment_id)
+
+countn <- count(strat_sample[,'comment_id'], comment_id)
+morethan <- countn %>% filter(n>3)
+
+diverced_anno <- df2 %>% filter(comment_id %in% morethan$comment_id)
+
+strat_comments <- diverced_anno %>%
+                  group_by(comment_id, annotator_race) %>%
+                  sample_n(size=1)
+
+strat_comments
 ```
 ```{r}
 #obtain stratified sample
@@ -182,7 +199,8 @@ table(strat_sample2$annotator_age)
 ```
 ```{r}
 #(strat_sample2)
-comme <- df %>% count(comment_id) %>% filter(n==max(comme$n))
+comme <- df %>% count(comment_id) 
+filter(comme ,n==max(comme$n))
 df %>% filter(comment_id == 20011)
 ```
 
