@@ -1,6 +1,6 @@
 ---
 title: "research"
-author: "Eran Aizikovich"
+author: "Eran Aizikovich and Yuval Segal"
 date: "6/14/2022"
 output: html_document
 ---
