@@ -15,6 +15,12 @@ library(dplyr)
 
 library("ggalluvial")
 library("gridExtra") 
+
+
+
+library(tidymodels)
+library(schrute)
+library(lubridate)
 ```
 
 ```{r include = FALSE}
@@ -24,12 +30,6 @@ df <- read.csv(
   "data\\data_no_red.csv")
 glimpse(df)
 ```
-
-```{r}
-cols <- c('comment_id','annotator_id', 'hatespeech', 'hate_speech_score',
-          'annotator_severity', 'std_err','annotator_infitms' )
-```
-
 
 ```{r}
 g1 <- ggplot(df, aes(x=annotator_severity))+
@@ -121,17 +121,10 @@ g4 <-  ggplot(df, aes(x=violence))+
 grid.arrange(g1,g2,g3, g4,ncol=2)
 
 ```
-```{r}
-ggplot(df, aes(x=hate_speech_score, y=violence)
-  )+
-  geom_point(
-
-  )
-```
 
 # התחלנו
 ```{r}
-df %>% filter(comment_id==17034)
+df <- df %>% filter(!(hatespeech==1))
 ```
 
 ```{r}
@@ -144,7 +137,7 @@ df <- df[,c("comment_id", "annotator_id", "sentiment", "respect", "insult",
 "annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality"
 )]
 ```
-
+annotatoes and comments
 ```{r}
 col_an <- c("annotator_id", "annotator_gender", "annotator_educ", "annotator_income", "annotator_ideology", "annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality")
 df_an <-  distinct(df, annotator_id, .keep_all = TRUE)[, col_an]
@@ -185,22 +178,26 @@ strat_comments <- diverced_anno %>%
                   group_by(comment_id, annotator_race) %>%
                   sample_n(size=1)
 
+strat_comments <- within(strat_comments, hatespeech[hatespeech == 2] <- 1)
 strat_comments
 ```
+# Model
+## split data
 ```{r}
-#obtain stratified sample
-strat_sample2 <- df2 %>%
-                  group_by(annotator_age) %>%
-                  sample_frac(size=1)
-```
+set.seed(1122)
 
-```{r}
-table(strat_sample2$annotator_age)
+df_model <- strat_comments
+df_split <- initial_split(df_model)
+
+train <- training(df_split)
+test <- testing(df_split)
 ```
+## fit model
 ```{r}
-#(strat_sample2)
-comme <- df %>% count(comment_id) 
-filter(comme ,n==max(comme$n))
-df %>% filter(comment_id == 20011)
+
+model <- glm(hatespeech ~ hate_speech_score+humiliate+annotator_race , data = train, family = binomial)
+
+summary(model)
+
 ```
 
