@@ -251,13 +251,13 @@ feat <- c("sentiment", "respect", "insult", "humiliate", "dehumanize",
 
 ## One of the sagnificent coef is the: annotator_income - 100k-200k
 ```{r}
-traget_jew <- df %>% filter(!(hatespeech==1) & target_religion == "jewish")
-traget_jew <- within(traget_jew, hatespeech[hatespeech == 2] <- 1)
-traget_jew <-traget_jew[,feat]
+target_jew <- df %>% filter(!(hatespeech==1) & target_religion == "jewish")
+target_jew <- within(target_jew, hatespeech[hatespeech == 2] <- 1)
+target_jew <-target_jew[,feat]
 
 set.seed(1122)
 
-df_model <- traget_jew
+df_model <- target_jew
 df_split <- initial_split(df_model)
 
 train <- training(df_split)
@@ -270,13 +270,13 @@ summary(model)
 ```
 ## the most sagnificent coef is the: annotator_ideology - extremely_liberal
 ```{r}
-traget_athe <- df %>% filter(!(hatespeech==1) & target_religion == "atheist")
-traget_athe <- within(traget_athe, hatespeech[hatespeech == 2] <- 1)
-traget_athe <-traget_athe[,feat]
+target_athe <- df %>% filter(!(hatespeech==1) & target_religion == "atheist")
+target_athe <- within(target_athe, hatespeech[hatespeech == 2] <- 1)
+target_athe <-target_athe[,feat]
 
 set.seed(1122)
 
-df_model <- traget_athe
+df_model <- target_athe
 df_split <- initial_split(df_model)
 
 train <- training(df_split)
@@ -294,13 +294,13 @@ unique(df$target_race)
 ## for latin there sagnificant to annotator_religion - christian   
 ```{r}
 
-traget_race_l <- df %>% filter(!(hatespeech==1) & target_race == "latinx")
-traget_race_l <- within(traget_race_l, hatespeech[hatespeech == 2] <- 1)
-traget_race_l <- traget_race_l[,feat]
+target_race_l <- df %>% filter(!(hatespeech==1) & target_race == "latinx")
+target_race_l <- within(target_race_l, hatespeech[hatespeech == 2] <- 1)
+target_race_l <- target_race_l[,feat]
 
 set.seed(1122)
 
-df_model <- traget_race_l
+df_model <- target_race_l
 
 df_split <- initial_split(df_model)
 
@@ -315,13 +315,13 @@ summary(model)
 
 ```{r}
 
-traget_race_me <- df %>% filter(!(hatespeech==1) & target_race == "middle_eastern")
-traget_race_me <- within(traget_race_me, hatespeech[hatespeech == 2] <- 1)
-traget_race_me <- traget_race_me[,feat]
+target_race_me <- df %>% filter(!(hatespeech==1) & target_race == "middle_eastern")
+target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+target_race_me <- target_race_me[,feat]
 
 set.seed(1122)
 
-df_model <- traget_race_me
+df_model <- target_race_me
 
 df_split <- initial_split(df_model)
 
@@ -336,12 +336,12 @@ summary(model)
 # very 
 ```{r}
 
-traget_race_l <- traget_race_l %>% filter(!(annotator_religion=='0' | annotator_religion==0))
+target_race_l <- target_race_l %>% filter(!(annotator_religion=='0' | annotator_religion==0))
 
 latin <- strat_comments %>% filter(target_race=="latinx")
 
 
-ggplot(traget_race_l ,aes(y=annotator_ideology, fill = as.factor(hatespeech)))+
+ggplot(target_race_l ,aes(y=annotator_ideology, fill = as.factor(hatespeech)))+
   geom_bar(position = 'fill')+
   labs(title = "Target is latin")+
   scale_fill_manual(values=c("light blue", "dark red"))+
@@ -353,3 +353,48 @@ ggplot(traget_race_l ,aes(y=annotator_ideology, fill = as.factor(hatespeech)))+
   
 ```
 
+```{r}
+x <- c(unique(df$annotator_race))
+
+for (i in x) {
+  print(i)
+  target_race_me <- df %>% filter(!(hatespeech==1) & annotator_race == i)
+  target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+  set.seed(1122)
+  
+  df_model <- target_race_me
+  
+  df_split <- initial_split(df_model)
+  
+  train <- training(df_split)
+  test <- testing(df_split)
+  
+  model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality+annotator_ideology+annotator_age, data = train)
+  
+  print(summary(model))
+}
+```
+By Income
+```{r}
+x <- c(unique(df$annotator_income))
+
+for (i in x) {
+  print(i)
+  target_race_me <- df %>% filter(!(hatespeech==1) & annotator_income == i)
+  target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+  set.seed(1122)
+  
+  df_model <- target_race_me
+  
+  df_split <- initial_split(df_model)
+  
+  train <- training(df_split)
+  test <- testing(df_split)
+  
+  model <- glm(hatespeech ~ target_race+target_religion+target_gender, data = train)
+  
+  print(summary(model))
+}
+```
