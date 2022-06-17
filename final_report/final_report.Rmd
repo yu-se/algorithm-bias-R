@@ -1,0 +1,27 @@
+---
+title: "Final Report"
+author: "Team Y"
+date: "6/17/2022"
+output: html_document
+---
+
+```{r load-packages, include = FALSE}
+library(knitr)
+library(tidyverse)
+library(broom)
+library(htmltools)
+library(dplyr)
+library("ggalluvial")
+library("gridExtra") 
+library(tidymodels)
+library(schrute)
+library(lubridate)
+```
+
+```{r}
+# opts_chunk$set(echo=FALSE) # hide source code in the document
+path <- setwd("..")
+df <- read.csv(
+  "data\\data_no_red.csv")
+```
+# section 1 - Intro
