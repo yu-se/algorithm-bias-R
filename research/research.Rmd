@@ -23,7 +23,7 @@ library(schrute)
 library(lubridate)
 ```
 
-```{r include = FALSE}
+```{r}
 # opts_chunk$set(echo=FALSE) # hide source code in the document
 path <- setwd("..")
 df <- read.csv(
@@ -119,6 +119,8 @@ g4 <-  ggplot(df, aes(x=violence))+
         )
 
 grid.arrange(g1,g2,g3, g4,ncol=2)
+df %>% filter(!(comment_id==1))
+
 
 ```
 
@@ -139,7 +141,9 @@ df <- df[,c("comment_id", "annotator_id", "sentiment", "respect", "insult",
 ```
 annotatoes and comments
 ```{r}
-col_an <- c("annotator_id", "annotator_gender", "annotator_educ", "annotator_income", "annotator_ideology", "annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality")
+col_an <- c("annotator_id", "annotator_gender",  "sentiment", "respect", "insult", 
+"humiliate", "dehumanize", "violence", "genocide", "attack_defend", 
+"hatespeech","annotator_educ", "annotator_income", "annotator_ideology", "annotator_age", "annotator_race", "annotator_religion", "annotator_sexuality","hate_speech_score")
 df_an <-  distinct(df, annotator_id, .keep_all = TRUE)[, col_an]
 df_an
 
@@ -179,7 +183,7 @@ strat_comments <- diverced_anno %>%
                   sample_n(size=1)
 
 strat_comments <- within(strat_comments, hatespeech[hatespeech == 2] <- 1)
-strat_comments
+glimpse(strat_comments)
 ```
 # Model
 ## split data
@@ -201,3 +205,34 @@ summary(model)
 
 ```
 
+```{r}
+
+model <- glm(hatespeech ~ hate_speech_score+humiliate+target_race+annotator_religion, data = df)
+
+summary(model)
+
+```
+
+```{r}
+
+model <- glm(hatespeech ~ ., data = df)
+
+summary(model)
+
+```
+
+```{r}
+
+model <- glm(hatespeech ~ humiliate+dehumanize+violence+attack_defend+target_race+target_religion+target_sexuality, data = df_com)
+
+summary(model)
+
+```
+
+```{r}
+
+model <- glm(hatespeech ~ target_race+target_religion+target_sexuality, data = df)
+
+summary(model)
+
+```
