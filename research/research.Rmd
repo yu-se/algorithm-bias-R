@@ -398,3 +398,81 @@ for (i in x) {
   print(summary(model))
 }
 ```
+
+By educ
+```{r}
+x <- c(unique(df$annotator_educ))
+
+for (i in x) {
+  print(i)
+  target_race_me <- df %>% filter(!(hatespeech==1) & annotator_educ == i)
+  target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+  set.seed(1122)
+  
+  df_model <- target_race_me
+  
+  df_split <- initial_split(df_model)
+  
+  train <- training(df_split)
+  test <- testing(df_split)
+  
+  model <- glm(hatespeech ~ target_race+target_religion+target_gender, data = train)
+  
+  print(summary(model))
+  model$confusion
+  
+}
+```
+```{r}
+
+  target_race_me <- df %>% filter(!(hatespeech==1) & annotator_educ == i)
+  target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+  set.seed(1122)
+  
+  df_model <- target_race_me
+  
+  df_split <- initial_split(df_model)
+  
+  train <- training(df_split)
+  test <- testing(df_split)
+  
+  model <- glm(hatespeech ~ target_race+target_religion+target_gender, data = train)
+  
+  print(summary(model))
+  model$confusion
+```
+
+
+```{r}
+install.packages('klaR')
+```
+```{r}
+library('klaR')
+```
+
+```{r}
+(cl <- kmodes(df[,c('annotator_income', 'hatespeech')], 4))
+```
+
+```{r}
+plot((df[,c('annotator_income', 'target_race', 'hatespeech')]), col=cl$cluster)
+points(cl$modes, col=1:5, pch=1)
+```
+
+
+
+
+```{r}
+install.packages("randomForest")
+library("randomForest")
+```
+
+```{r}
+model <- randomForest(y=as.factor(test$hatespeech), x=cbind(test$annotator_race))
+
+plot(model)
+```
+
+
