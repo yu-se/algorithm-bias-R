@@ -70,6 +70,40 @@ target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
 set.seed(1122)
 
 df_model <- target_race_me
+df_model <- subset(target_race_me, select = -c(annotator_educ, comment_id, annotator_id, hate_speech_score,sentiment,respect,insult,humiliate,dehumanize,violence,genocide,attack_defend ))
+
+
+df_split <- initial_split(df_model)
+
+train <- training(df_split)
+test <- testing(df_split)
+
+model <- glm(hatespeech ~ ., data = train)
+summary(model)
+
+```
+```{r}
+print("General")
+x <- predict(model, newdata = test, type = "response")
+xx <- ifelse(x < 0.5, 0, 1)
+
+xxx <- data.frame(Predicted = xx, Actual = test$hatespeech)
+xxx$Predicted <- as.factor(xxx$Predicted)
+
+xxx$Actual <- as.factor(xxx$Actual)
+
+caret::confusionMatrix(xxx$Predicted, xxx$Actual)
+
+```
+
+```{r}
+
+target_race_me <- df %>% filter(!(hatespeech==1) & annotator_religion == "muslim")
+target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+set.seed(1122)
+
+df_model <- target_race_me
 df_model <- subset(target_race_me, select = -c(annotator_race, comment_id, annotator_id ))
 
 
@@ -79,11 +113,135 @@ train <- training(df_split)
 test <- testing(df_split)
 
 model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality+annotator_age, data = train)
-summary(model)
+
+# summary(model)
+
+x <- predict(model, newdata = test, type = "response")
+xx <- ifelse(x < 0.5, 0, 1)
+
+xxx <- data.frame(Predicted = xx, Actual = test$hatespeech)
+xxx$Predicted <- as.factor(xxx$Predicted)
+
+xxx$Actual <- as.factor(xxx$Actual)
+
+caret::confusionMatrix(xxx$Predicted, xxx$Actual)
 
 ```
 ```{r}
-library(caret)
+
+target_race_me <- df %>% filter(!(hatespeech==1) & annotator_religion == "atheist")
+target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+set.seed(1122)
+
+df_model <- target_race_me
+df_model <- subset(target_race_me, select = -c(annotator_race, comment_id, annotator_id ))
+
+
+df_split <- initial_split(df_model)
+
+train <- training(df_split)
+test <- testing(df_split)
+
+model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality+annotator_age, data = train)
+
+# summary(model)
+
+x <- predict(model, newdata = test, type = "response")
+xx <- ifelse(x < 0.5, 0, 1)
+
+xxx <- data.frame(Predicted = xx, Actual = test$hatespeech)
+xxx$Predicted <- as.factor(xxx$Predicted)
+
+xxx$Actual <- as.factor(xxx$Actual)
+
+caret::confusionMatrix(xxx$Predicted, xxx$Actual)
+
+```
+
+```{r}
+
+target_race_me <- df %>% filter(!(hatespeech==1) & target_religion == "atheist")
+target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+set.seed(1122)
+
+df_model <- target_race_me
+df_model <- subset(target_race_me, select = -c(target_religion, comment_id, annotator_id ))
+
+
+df_split <- initial_split(df_model)
+
+train <- training(df_split)
+test <- testing(df_split)
+
+model <- glm(hatespeech ~ target_race+target_gender+target_sexuality+annotator_age, data = train)
+
+# summary(model)
+
+x <- predict(model, newdata = test, type = "response")
+xx <- ifelse(x < 0.5, 0, 1)
+
+xxx <- data.frame(Predicted = xx, Actual = test$hatespeech)
+xxx$Predicted <- as.factor(xxx$Predicted)
+
+xxx$Actual <- as.factor(xxx$Actual)
+
+caret::confusionMatrix(xxx$Predicted, xxx$Actual)
+
+```
+```{r}
+
+
+target_race_me <- df %>% filter(!(hatespeech==1) & target_race == "native_american")
+target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+set.seed(1122)
+
+df_model <- target_race_me
+df_model <- subset(target_race_me, select = -c(target_race, comment_id, annotator_id ))
+
+
+df_split <- initial_split(df_model)
+
+train <- training(df_split)
+test <- testing(df_split)
+
+model <- glm(hatespeech ~ annotator_race+target_gender+annotator_age, data = train)
+
+# summary(model)
+
+x <- predict(model, newdata = test, type = "response")
+xx <- ifelse(x < 0.5, 0, 1)
+
+xxx <- data.frame(Predicted = xx, Actual = test$hatespeech)
+xxx$Predicted <- as.factor(xxx$Predicted)
+
+xxx$Actual <- as.factor(xxx$Actual)
+
+caret::confusionMatrix(xxx$Predicted, xxx$Actual)
+
+```
+```{r}
+
+
+target_race_me <- df %>% filter(!(hatespeech==1) & annotator_educ == "professional_degree")
+target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+set.seed(1122)
+
+df_model <- target_race_me
+df_model <- subset(target_race_me, select = -c(annotator_educ, comment_id, annotator_id, hate_speech_score,sentiment,respect,insult,humiliate,dehumanize,violence,genocide,attack_defend ))
+
+
+df_split <- initial_split(df_model)
+
+train <- training(df_split)
+test <- testing(df_split)
+
+model <- glm(hatespeech ~ ., data = train)
+
+# summary(model)
 
 x <- predict(model, newdata = test, type = "response")
 xx <- ifelse(x < 0.5, 0, 1)
