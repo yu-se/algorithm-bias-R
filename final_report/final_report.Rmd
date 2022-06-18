@@ -25,3 +25,26 @@ df <- read.csv(
   "data\\data_no_red.csv")
 ```
 # section 1 - Intro
+
+```{r}
+x <- c(unique(df$annotator_race))
+
+for (i in x) {
+  print(i)
+  target_race_me <- df %>% filter(!(hatespeech==1) & annotator_race == i)
+  target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
+
+  set.seed(1122)
+  
+  df_model <- target_race_me
+  
+  df_split <- initial_split(df_model)
+  
+  train <- training(df_split)
+  test <- testing(df_split)
+  
+  model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality+annotator_age, data = train)
+  
+  print(summary(model))
+}
+```
