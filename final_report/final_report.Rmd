@@ -137,7 +137,7 @@ caret::confusionMatrix(xxx$Predicted, xxx$Actual)
 target_race_me <- df %>% filter(!(hatespeech==1) & target_religion == "atheist")
 target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
 
-set.seed(1122)
+set.seed(14453)
 
 df_model <- target_race_me
 df_model <- subset(target_race_me, select = -c(target_religion, comment_id, annotator_id ))
@@ -215,8 +215,8 @@ general <- c(17249/sum(g_i), 6778/sum(g_i), 2912/sum(g_i), 4702/sum(g_i))
 m_i <- c(131, 40, 20, 27)
 muslim <- c(131/sum(m_i), 40/sum(m_i), 20/sum(m_i), 27/sum(m_i))
 
-a_i <- c(88,14,0,0)
-ath <- c(88/sum(a_i), 14/sum(a_i), 0/sum(a_i), 0/sum(a_i))
+a_i <- c(89,12,1,0)
+ath <- c(89/sum(a_i), 12/sum(a_i), 1/sum(a_i), 0/sum(a_i))
 
 
 
@@ -229,27 +229,27 @@ p1<-ggplot(data =  g_df, mapping = aes(x = Reference, y = Prediction)) +
       geom_text(aes(label = sprintf("%0.3f", general)), vjust = 1, size=10) +
       scale_fill_gradient(low = "blue", high = "green") +
       labs(title = 'Confusion Matrix Ratio - General model', subtitle = " Accuracy : 0.6938 ")+
-      theme_bw() +  theme(legend.position = "none",
-                           plot.title = element_text(hjust = 0.5),
-                           plot.subtitle = element_text(hjust = 0.5))
+      theme_bw() + theme(legend.position = "none",
+                           plot.title = element_text(hjust = 0.5, size= 20),
+                           plot.subtitle = element_text(hjust = 0.5, size= 15))
 
 p2<-ggplot(data =  g_df, mapping = aes(x = Reference, y = Prediction)) +
       geom_tile(aes(fill = muslim), colour = "white") +
       geom_text(aes(label = sprintf("%0.3f", muslim)), vjust = 1, size=10) +
       scale_fill_gradient(low = "blue", high = "green") +
       labs(title = 'Confusion Matrix Ratio - Muslim Annotators', subtitle = "Accuracy : 0.7248 ")+
-      theme_bw() +  theme(legend.position = "none",
-                           plot.title = element_text(hjust = 0.5),
-                           plot.subtitle = element_text(hjust = 0.5))
+      theme_bw()+ theme(legend.position = "none",
+                           plot.title = element_text(hjust = 0.5, size= 20),
+                           plot.subtitle = element_text(hjust = 0.5, size= 15))
 
 p3 <- ggplot(data =  a_df, mapping = aes(x = Reference, y = Prediction)) +
         geom_tile(aes(fill = ath), colour = "white") +
         geom_text(aes(label = sprintf("%0.3f", ath)), vjust = 1, size=10) +
         scale_fill_gradient(low = "blue", high = "green") +
-        labs(title = 'Confusion Matrix Ratio - Atheist Annotators', subtitle = " Accuracy : 0.8627 ")+
+        labs(title = 'Confusion Matrix Ratio - Atheist Annotators', subtitle = " Accuracy : 0.8725 ")+
         theme_bw() + theme(legend.position = "none",
                            plot.title = element_text(hjust = 0.5, size= 20),
-                           plot.subtitle = element_text(hjust = 0.5))
+                           plot.subtitle = element_text(hjust = 0.5, size= 15))
 
 
 
