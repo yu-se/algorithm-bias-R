@@ -85,7 +85,7 @@ df_split <- initial_split(df_model)
 train <- training(df_split)
 test <- testing(df_split)
 
-model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality+annotator_age, data = train)
+model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality, data = train)
 summary(model)
 
 
@@ -104,10 +104,10 @@ caret::confusionMatrix(xxx$Predicted, xxx$Actual)
 # muslim
 ```{r}
 
-target_race_me <- df %>% filter(!(hatespeech==1) & annotator_religion == "muslim")
+target_race_me <- df %>% filter(!(hatespeech==1) & annotator_religion == "atheist")
 target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
 
-set.seed(1122)
+set.seed(14465)
 
 df_model <- target_race_me
 df_model <- subset(target_race_me, select = -c(annotator_race, comment_id, annotator_id ))
@@ -118,7 +118,7 @@ df_split <- initial_split(df_model)
 train <- training(df_split)
 test <- testing(df_split)
 
-model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality+annotator_age, data = train)
+model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality, data = train)
 
 summary(model)
 
@@ -134,13 +134,13 @@ caret::confusionMatrix(xxx$Predicted, xxx$Actual)
 ```
 # ATU
 ```{r}
-target_race_me <- df %>% filter(!(hatespeech==1) & target_religion == "atheist")
+target_race_me <- df %>% filter(!(hatespeech==1) & annotator_religion == "muslim")
 target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
 
-set.seed(14453)
+set.seed(14253)
 
 df_model <- target_race_me
-df_model <- subset(target_race_me, select = -c(target_religion, comment_id, annotator_id ))
+df_model <- subset(target_race_me, select = -c( comment_id, annotator_id ))
 
 
 df_split <- initial_split(df_model)
@@ -148,7 +148,7 @@ df_split <- initial_split(df_model)
 train <- training(df_split)
 test <- testing(df_split)
 
-model <- glm(hatespeech ~ target_race+target_gender+target_sexuality+annotator_age, data = train)
+model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality, data = train)
 
 summary(model)
 
@@ -169,7 +169,7 @@ caret::confusionMatrix(xxx$Predicted, xxx$Actual)
 ```{r}
 
 
-target_race_me <- df %>% filter(!(hatespeech==1) & annotator_educ == "professional_degree")
+target_race_me <- df %>% filter(!(hatespeech==1) & annotator_educ == "professioAnal_degree")
 target_race_me <- within(target_race_me, hatespeech[hatespeech == 2] <- 1)
 
 set.seed(1126)
@@ -183,7 +183,7 @@ df_split <- initial_split(df_model)
 train <- training(df_split)
 test <- testing(df_split)
 
-model <- glm(hatespeech ~ ., data = train)
+model <- glm(hatespeech ~ target_race+target_religion+target_gender+target_sexuality, data = train)
 
 summary(model)
 
@@ -200,10 +200,10 @@ caret::confusionMatrix(xxx$Predicted, xxx$Actual)
 ```
 
 # plot confusionMatrix
-         Reference
-Prediction  0  1
-         0 88 14
-         1  0  0
+          Reference
+Prediction   0   1
+         0 178  60
+         1  53  71
 ```{r}
 
 Prediction <- factor(c(0, 0, 1, 1))
@@ -215,44 +215,75 @@ general <- c(17249/sum(g_i), 6778/sum(g_i), 2912/sum(g_i), 4702/sum(g_i))
 m_i <- c(131, 40, 20, 27)
 muslim <- c(131/sum(m_i), 40/sum(m_i), 20/sum(m_i), 27/sum(m_i))
 
-a_i <- c(89,12,1,0)
-ath <- c(89/sum(a_i), 12/sum(a_i), 1/sum(a_i), 0/sum(a_i))
+p_i <- c(399,151,66,96)
+pro <- c(p_i[1]/sum(p_i), p_i[2]/sum(p_i), p_i[3]/sum(p_i), p_i[4]/sum(p_i))
 
+p_i <- c(178,60,53,71)
+phd <- c(p_i[1]/sum(p_i), p_i[2]/sum(p_i), p_i[3]/sum(p_i), p_i[4]/sum(p_i))
 
-
+p_i <- c(2326,829,340,604)
+inc <- c(p_i[1]/sum(p_i), p_i[2]/sum(p_i), p_i[3]/sum(p_i), p_i[4]/sum(p_i)) 
+  
+  
 g_df <- data.frame(Reference, Prediction, general)
 m_df <- data.frame(Reference, Prediction, muslim)
-a_df <- data.frame(Reference, Prediction, ath)
+p_df <- data.frame(Reference, Prediction, pro)
+h_df <- data.frame(Reference, Prediction, phd)
+i_df <- data.frame(Reference, Prediction, inc)
 
 p1<-ggplot(data =  g_df, mapping = aes(x = Reference, y = Prediction)) +
-      geom_tile(aes(fill = general), colour = "white") +
+      geom_tile(aes(fill = general), colour = "black", alpha=0.5) +
       geom_text(aes(label = sprintf("%0.3f", general)), vjust = 1, size=10) +
-      scale_fill_gradient(low = "blue", high = "green") +
+      scale_fill_gradient(low = "light blue", high = "dark blue") +
       labs(title = 'Confusion Matrix Ratio - General model', subtitle = " Accuracy : 0.6938 ")+
       theme_bw() + theme(legend.position = "none",
-                           plot.title = element_text(hjust = 0.5, size= 20),
+                           plot.title = element_text(hjust = 0.5, size= 20,face="bold"),
                            plot.subtitle = element_text(hjust = 0.5, size= 15))
 
 p2<-ggplot(data =  g_df, mapping = aes(x = Reference, y = Prediction)) +
-      geom_tile(aes(fill = muslim), colour = "white") +
+      geom_tile(aes(fill = muslim), colour = "black", alpha=0.5) +
       geom_text(aes(label = sprintf("%0.3f", muslim)), vjust = 1, size=10) +
-      scale_fill_gradient(low = "blue", high = "green") +
+      scale_fill_gradient(low = "light blue", high = "dark blue") +
       labs(title = 'Confusion Matrix Ratio - Muslim Annotators', subtitle = "Accuracy : 0.7248 ")+
       theme_bw()+ theme(legend.position = "none",
-                           plot.title = element_text(hjust = 0.5, size= 20),
+                           plot.title = element_text(hjust = 0.5, size= 20,face="bold"),
                            plot.subtitle = element_text(hjust = 0.5, size= 15))
 
-p3 <- ggplot(data =  a_df, mapping = aes(x = Reference, y = Prediction)) +
-        geom_tile(aes(fill = ath), colour = "white") +
-        geom_text(aes(label = sprintf("%0.3f", ath)), vjust = 1, size=10) +
-        scale_fill_gradient(low = "blue", high = "green") +
-        labs(title = 'Confusion Matrix Ratio - Atheist Annotators', subtitle = " Accuracy : 0.8725 ")+
+p3 <- ggplot(data =  p_df, mapping = aes(x = Reference, y = Prediction)) +
+        geom_tile(aes(fill = pro), colour = "black", alpha=0.5) +
+        geom_text(aes(label = sprintf("%0.3f", pro)), vjust = 1, size=10) +
+        scale_fill_gradient(low = "light blue", high = "dark blue") +
+        labs(title = 'Confusion Matrix Ratio - Professional Degree Annotators', subtitle = " Accuracy : 0.6952 ")+
         theme_bw() + theme(legend.position = "none",
-                           plot.title = element_text(hjust = 0.5, size= 20),
-                           plot.subtitle = element_text(hjust = 0.5, size= 15))
+                           plot.title = element_text(hjust = 0.5, size= 18,face="bold"),
+                           plot.subtitle = element_text(hjust = 0.5, size= 15),
+                           axis.title=element_text(size=14))
 
 
+p4 <- ggplot(data =  h_df, mapping = aes(x = Reference, y = Prediction)) +
+        geom_tile(aes(fill = phd), colour = "black", alpha=0.5) +
+        geom_text(aes(label = sprintf("%0.3f", phd)), vjust = 1, size=10) +
+        scale_fill_gradient(low = "light blue", high = "dark blue") +
+        labs(title = 'Confusion Matrix Ratio - Phd Annotators', subtitle = " Accuracy : 0.6878 ")+
+        theme_bw() + theme(legend.position = "none",
+                           plot.title = element_text(hjust = 0.5, size= 20,face="bold"),
+                           plot.subtitle = element_text(hjust = 0.5, size= 15),
+                           axis.title=element_text(size=14))
 
+p5 <-  ggplot(data =  i_df, mapping = aes(x = Reference, y = Prediction)) +
+        geom_tile(aes(fill = inc), colour = "black", alpha=0.5) +
+        geom_text(aes(label = sprintf("%0.3f", inc)), vjust = 1, size=10) +
+        scale_fill_gradient(low = "light blue", high = "dark blue") +
+        labs(title = 'Confusion Matrix Ratio - \n100k-200k Yearly Income Annotators', subtitle = " Accuracy : 0.7148 ")+
+        theme_bw() + theme(legend.position = "none",
+                           plot.title = element_text(hjust = 0.5, size= 18,face="bold"),
+                           plot.subtitle = element_text(hjust = 0.5, size= 15),
+                           axis.title=element_text(size=14))
+p1
+p2
+p3
+p4
+p5
 ```
 
 ```{r}

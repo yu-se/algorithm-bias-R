@@ -19,14 +19,14 @@ library("ggalluvial")
 library("gridExtra") 
 ```
 
-```{r include = FALSE}
+```{r}
 # opts_chunk$set(echo=FALSE) # hide source code in the document
 
 
 path <- setwd("..")
 df <- read.csv(
   "data\\measuring_hate_speech.csv")
-
+glimpse(df)
 ```
 ```{r}
 df %>% filter(comment_id==32074)
